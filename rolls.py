@@ -21,7 +21,7 @@ def slicedSums(m, r):
     for j in range(len(r)):
         s += r[j]
         if s >= m:
-            ss.append([s, r[i:j]])
+            ss.append([s, r[i:j + 1]])
             i, s = j + 1, 0
     return ss
 
@@ -66,6 +66,16 @@ def main(total_rolls=20000):
 
     print("Standard deviation of the number of rolls when M is 10000:",
           statistics.stdev(rollcount10k))
+
+    print("\nView of the rolls summing to 20")
+    print(format("Count", ">7"), format("Sum", ">7"), "Rolls", sep='')
+    for s in sliced_sum20:
+        print(format(len(s[1]), ">8"), format(s[0], ">8"), s[1], sep='')
+
+    print("\nView of the rolls summing to 10000")
+    print(format("Count", ">7"), format("Sum", ">7"), "Rolls")
+    for s in sliced_sum10k:
+        print(format(len(s[1]), ">7"), format(s[0], ">7"), s[1])
 
 
 main(100000)
