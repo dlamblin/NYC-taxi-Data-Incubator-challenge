@@ -5,6 +5,8 @@ import sys
 if sys.version_info < ( 3, 4):
     sys.exit("This script requires Python 3.4 or newer!")
 
+import statistics
+
 
 def rolls(n, low, high):
     random.seed(__author__)  # Keeping it reproducible for ease of development
@@ -24,10 +26,46 @@ def slicedSums(m, r):
     return ss
 
 
+def sums(ss, inc=0):
+    return [x[0] + inc for x in ss]
+
+
+def lens(ss):
+    return [len(x[1]) for x in ss]
+
+
 def main(total_rolls=20000):
-    print("start up")
     rolls_list = rolls(total_rolls, 1, 6)
     sliced_sum20 = slicedSums(20, rolls_list)
+    sums20 = sums(sliced_sum20, -20)
+    rollcount20 = lens(sliced_sum20)
+    sliced_sum10k = slicedSums(10000, rolls_list)
+    sums10k = sums(sliced_sum10k, -10000)
+    rollcount10k = lens(sliced_sum10k)
+
+    print("Mean of the sum - 20 when M is 20:",
+          statistics.mean(sums20))
+
+    print("Mean of the sum - 10000 when M is 10000:",
+          statistics.mean(sums10k))
+
+    print("Mean of the number of rolls when M is 20:",
+          statistics.mean(rollcount20))
+
+    print("Mean of the number of rolls when M is 10000:",
+          statistics.mean(rollcount10k))
+
+    print("Standard deviation of the sum - 20 when M is 20:",
+          statistics.stdev(sums20))
+
+    print("Standard deviation of the sum - 10000 when M is 10000:",
+          statistics.stdev(sums10k))
+
+    print("Standard deviation of the number of rolls when M is 20:",
+          statistics.stdev(rollcount20))
+
+    print("Standard deviation of the number of rolls when M is 10000:",
+          statistics.stdev(rollcount10k))
 
 
 main(100000)
