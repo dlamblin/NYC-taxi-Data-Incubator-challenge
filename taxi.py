@@ -15,11 +15,14 @@ What is the median of the taxi's fare per mile driven? (5.0)
 What is the 95 percentile of the taxi's average driving speed
     in miles per hour? (26.60869565217391)
 What is the average ratio of the distance between the pickup and dropoff
-    divided by the distance driven? ()
+    divided by the distance driven? (3.64816470898)
 What is the average tip for rides from JFK? (4.475241258619489)
 What is the median March revenue of a taxi driver? (7221.199999999995)
 
-NOTE: The average tip for rides from JFK where the tip was > $0 is 9.403738
+NOTE:
+    The average tip for rides from JFK where the tip was > $0 is 9.403738
+    The "average ratio..." question is answered last in this script.
+    It is pretty slow.
 
 Usage Example:
 
@@ -79,6 +82,22 @@ print("The 95 percentile of the taxi's average driving speed"
       "in miles per hour:",
       (taxis['trip_distance'] / (taxis['trip_time_in_secs'] / 3600)
        ).quantile(0.95))
+
+pkup_lat_in_jfk_max = taxis['pickup_latitude'] < 40.649256
+pkup_lat_in_jfk_min = taxis['pickup_latitude'] > 40.639955
+pkup_lon_in_jfk_min = taxis['pickup_longitude'] > -73.793245
+pkup_lon_in_jfk_max = taxis['pickup_longitude'] < -73.774793
+tipped = taxis['tip_amount'] > 0
+print("The average tip for rides from JFK:",
+      taxis[pkup_lat_in_jfk_max & pkup_lat_in_jfk_min & pkup_lon_in_jfk_max &
+            pkup_lon_in_jfk_min]['tip_amount'].mean())
+
+print("The average tip when tipped for rides from JFK:",
+      taxis[pkup_lat_in_jfk_max & pkup_lat_in_jfk_min & pkup_lon_in_jfk_max &
+            pkup_lon_in_jfk_min & tipped]['tip_amount'].mean())
+
+print("The median March revenue of a taxi driver:",
+      taxis.groupby('hack_license')['total_amount'].sum().median())
 
 
 def distance_on_unit_sphere(lat1, lon1, lat2, lon2):
@@ -140,16 +159,14 @@ def haversine(lat1, lon1, lat2, lon2):
         :return: The arc length on a unit sphere of the lat-lon 1-2 arc
         :rtype: (float)
     """
-    lat1 = math.radians(lat1)
-    lon1 = math.radians(lon1)
-    lat2 = math.radians(lat2)
-    lon2 = math.radians(lon2)
+    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
 
     dlon = lon2 - lon1
     dlat = lat2 - lat1
-    a = (math.sin(dlat / 2)) ** 2 + math.cos(lat1) * math.cos(lat2) \
-                                    * (math.sin(dlon / 2)) ** 2
-    return 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) \
+                                  * math.sin(dlon / 2) ** 2
+    # return 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return 2 * math.asin(math.sqrt(a))
 
 
 def haversine_miles(lat1, lon1, lat2, lon2):
@@ -161,30 +178,19 @@ def haversine_kilometers(lat1, lon1, lat2, lon2):
 
 
 def dist_by_miles(x):
-    hm = haversine_miles(x['pickup_latitude'], x['pickup_longitude'],
-                         x['dropoff_latitude'], x['dropoff_longitude'])
-    if hm > 0 and x['trip_distance'] > 0:
-        return x['trip_distance'] / hm
-    else:
-        return numpy.nan
+    if x['trip_distance'] > 0:
+        hm = haversine_miles(x['pickup_latitude'], x['pickup_longitude'],
+                             x['dropoff_latitude'], x['dropoff_longitude'])
+        if hm > 0:
+            return x['trip_distance'] / hm
+    return numpy.nan
 
 
 print("The average ratio of the distance between the pickup and dropoff "
       "divided by the distance driven:",
-      taxis.apply(lambda x: dist_by_miles(x), axis=1, reduce=True).mean())
+      taxis[
+          ['pickup_latitude', 'pickup_longitude',
+           'dropoff_latitude', 'dropoff_longitude',
+           'trip_distance']
+      ].apply(lambda x: dist_by_miles(x), axis=1, reduce=True).mean())
 
-pkup_lat_in_jfk_max = taxis['pickup_latitude'] < 40.649256
-pkup_lat_in_jfk_min = taxis['pickup_latitude'] > 40.639955
-pkup_lon_in_jfk_min = taxis['pickup_longitude'] > -73.793245
-pkup_lon_in_jfk_max = taxis['pickup_longitude'] < -73.774793
-tipped = taxis['tip_amount'] > 0
-print("The average tip for rides from JFK:",
-      taxis[pkup_lat_in_jfk_max & pkup_lat_in_jfk_min & pkup_lon_in_jfk_max &
-            pkup_lon_in_jfk_min]['tip_amount'].mean())
-
-print("The average tip when tipped for rides from JFK:",
-      taxis[pkup_lat_in_jfk_max & pkup_lat_in_jfk_min & pkup_lon_in_jfk_max &
-            pkup_lon_in_jfk_min & tipped]['tip_amount'].mean())
-
-print("The median March revenue of a taxi driver:",
-      taxis.groupby('hack_license')['total_amount'].sum().median())
