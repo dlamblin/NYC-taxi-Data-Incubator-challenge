@@ -153,7 +153,7 @@ Fraction of payments under $5 use a credit card (percent): 8.878207375437885
 Fraction of payments over $50 use a credit card (percent): 68.16734964388728
 The mean fare per minute driven: 1.41292866002
 The median of the taxi's fare per mile driven: 5.0
-The 95 percentile of the taxi's average driving speedin miles per hour: 26.6086956522
+The 95 percentile of the taxi's average driving speed in miles per hour: 26.6086956522
 The average tip for rides from JFK: 4.47524125862
 The average tip when tipped for rides from JFK: 9.40373783388
 The median March revenue of a taxi driver: 7221.199999999995

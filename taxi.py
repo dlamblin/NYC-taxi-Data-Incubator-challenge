@@ -78,7 +78,7 @@ print("The mean fare per minute driven:",
 print("The median of the taxi's fare per mile driven:",
       (taxis['fare_amount'] / (taxis['trip_distance'])).median())
 
-print("The 95 percentile of the taxi's average driving speed"
+print("The 95 percentile of the taxi's average driving speed "
       "in miles per hour:",
       (taxis['trip_distance'] / (taxis['trip_time_in_secs'] / 3600)
        ).quantile(0.95))
