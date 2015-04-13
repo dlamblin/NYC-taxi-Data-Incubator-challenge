@@ -1,3 +1,27 @@
+"""Answering https://www.thedataincubator.com/challenge.html (login required).
+
+Answers question 2 on the challenge, by reading and cleaning nyc taxi data,
+then using it for the results.
+
+Question was (and the answers are):
+
+Q2: The files trip_data_3.csv.zip and trip_fare_3.csv.zip contain travel and
+fare data for NYC taxicabs in March 2013. [Use them to answer these]
+
+What fraction of payments under $5 use a credit card? (8.88%)
+What fraction of payments over $50 use a credit card? (68.17%)
+What is the mean fare per minute driven? (1.412929)
+What is the median of the taxi's fare per mile driven? (5.0)
+What is the 95 percentile of the taxi's average driving speed in miles per hour? (26.60869565217391)
+What is the average ratio of the distance between the pickup and dropoff divided by the distance driven? ()
+What is the average tip for rides from JFK? ()
+What is the median March revenue of a taxi driver? (7221.199999999995)
+
+Usage Example:
+
+      $ python3 taxi.py
+
+"""
 __author__ = 'dlamblin'
 import math
 

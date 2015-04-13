@@ -11,10 +11,14 @@ What is the mean of the sum minus M when M=20? (1.6663572224285184)
 What is the mean of the sum minus M when M=10000? (1.4285714285714286)
 What is the mean of the number of rolls when M=20? (6.188822874118084)
 What is the mean of the number of rolls when M=10000? (2856.8)
-What is the standard deviation of the sum minus M when M=20? (1.4921206223381762)
-What is the standard deviation of the sum minus M when M=10000? (1.1952286093343936)
-What is the standard deviation of the number of rolls when M=20? (1.2261439318861245)
-What is the standard deviation of the number of rolls when M=10000? (23.2793773921191)
+What is the standard deviation of the sum minus M when M=20?
+    (1.4921206223381762)
+What is the standard deviation of the sum minus M when M=10000?
+    (1.1952286093343936)
+What is the standard deviation of the number of rolls when M=20?
+    (1.2261439318861245)
+What is the standard deviation of the number of rolls when M=10000?
+    (23.2793773921191)
 
 Usage Example:
 

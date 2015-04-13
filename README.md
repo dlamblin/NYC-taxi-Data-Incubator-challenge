@@ -1,8 +1,8 @@
-#Data Incubator 2015 challenge
+# Data Incubator 2015 challenge
 The challenge put forward a couple of questions with multiple parts and an open ended project proposal.
 
-##The Questions
-###Q1
+## The Questions
+### Q1
 
 You roll a fair 6-sided dice iteratively until the sum of the dice rolls is greater than or equal to M.
 
@@ -15,7 +15,7 @@ What is the standard deviation of the number of rolls when M=20?
 What is the mean of the number of rolls when M=10000?  
 What is the standard deviation of the number of rolls when M=10000? 
 
-###Q2
+### Q2
 
 The files [trip_data_3.csv.zip](0) and [trip_fare_3.csv.zip](1) contain travel and fare data for NYC taxicabs
 in March 2013. A snippet from the files looks like this:
@@ -47,7 +47,7 @@ What is the average ratio of the distance between the pickup and dropoff divided
 What is the average tip for rides from JFK?   
 What is the median March revenue of a taxi driver?  
 
-##My approach
+## My approach
 
 Challenges, particularly programming challenges aimed at under a day, are a kind of fun activity for me on their own.
 Another activity I consider fun is using a tool or set that I have been meaning to which I have yet to fully learn.
@@ -68,10 +68,13 @@ reasonable to have other plans. But I did manage to find or make some time in th
 more than the recommended time on filling out the answers because I like making my code look legible. I hope you find it
 to be the case that this is readable.
 
-Notes: I think "taxi's" was meant as "taxis'" IE a property of all the taxis in the data.
+#### Notes
+I think questions' "taxi's" was meant as "taxis'" IE a property of all the taxis in the data. Also the "average ratio...
+divided" question I read to be asking for the mean of miles driven per (great-circle) mile between the pickup and drop
+off location. I hope this isn't the inverse what what was intended.
 
-##Results:
-###Bellow is an abbreviated run of: *rolls.py*
+## Results:
+### Bellow is an abbreviated run of: *rolls.py*
 <pre>
 Mean of the sum - 20 when M is 20: 1.6663572224285184
 Mean of the sum - 10000 when M is 10000: 1.4285714285714286
