@@ -71,7 +71,7 @@ to be the case that this is readable.
 #### Notes
 I think questions' "taxi's" was meant as "taxis'" IE a property of all the taxis in the data. Also the "average ratio...
 divided" question I read to be asking for the mean of miles driven per (great-circle) mile between the pickup and drop
-off location. I hope this isn't the inverse what what was intended.
+off location. I hope this isn't the inverse what what was intended. I counted $0 tips in the tip average.
 
 ## Results:
 ### Bellow is an abbreviated run of: *rolls.py*

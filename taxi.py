@@ -12,10 +12,14 @@ What fraction of payments under $5 use a credit card? (8.88%)
 What fraction of payments over $50 use a credit card? (68.17%)
 What is the mean fare per minute driven? (1.412929)
 What is the median of the taxi's fare per mile driven? (5.0)
-What is the 95 percentile of the taxi's average driving speed in miles per hour? (26.60869565217391)
-What is the average ratio of the distance between the pickup and dropoff divided by the distance driven? ()
-What is the average tip for rides from JFK? ()
+What is the 95 percentile of the taxi's average driving speed
+    in miles per hour? (26.60869565217391)
+What is the average ratio of the distance between the pickup and dropoff
+    divided by the distance driven? ()
+What is the average tip for rides from JFK? (4.475241258619489)
 What is the median March revenue of a taxi driver? (7221.199999999995)
+
+NOTE: The average tip for rides from JFK where the tip was > $0 is 9.403738
 
 Usage Example:
 
@@ -31,22 +35,26 @@ import numpy
 
 # Load
 trip_data = pandas.read_csv('trip_data_3.csv', skipinitialspace=True, dtype={
-    'rate_code': str, 'passenger_count': numpy.int, 'trip_time_in_secs': numpy.int, 'trip_distance': numpy.float},
+    'rate_code': str, 'passenger_count': numpy.int,
+    'trip_time_in_secs': numpy.int, 'trip_distance': numpy.float},
                             parse_dates=[6, 7])
-trip_fare = pandas.read_csv('trip_fare_3.csv', skipinitialspace=True, parse_dates=[4])
+trip_fare = pandas.read_csv('trip_fare_3.csv', skipinitialspace=True,
+                            parse_dates=[4])
 # Clean up
-trip_data.passenger_count.replace({'0': numpy.nan, '255': numpy.nan}, inplace=True)
+trip_data.passenger_count.replace({'0': numpy.nan, '255': numpy.nan},
+                                  inplace=True)
 trip_data.trip_time_in_secs.replace({0: numpy.nan}, inplace=True)
 trip_data.trip_distance.replace({0: numpy.nan}, inplace=True)
 trip_fare.payment_type.replace({'UNK': numpy.nan}, inplace=True)
 
 # Join
-taxis = pandas.merge(trip_data, trip_fare, on=['medallion', 'hack_license', 'vendor_id', 'pickup_datetime'])
+taxis = pandas.merge(trip_data, trip_fare,
+                     on=['medallion', 'hack_license',
+                         'vendor_id', 'pickup_datetime'])
 
 total_under_five = taxis['total_amount'] < 5
 total_over_fifty = taxis['total_amount'] > 50
 uses_credit = taxis['payment_type'] == 'CRD'
-
 # "CRD" -- card, debit or credit
 # "CSH" -- cash
 # "DIS" -- disputed fare
@@ -54,10 +62,12 @@ uses_credit = taxis['payment_type'] == 'CRD'
 # "UNK"/NaN -- unknown
 
 print("Fraction of payments under $5 use a credit card (percent):",
-      len(taxis[total_under_five & uses_credit]) / len(taxis[total_under_five]) * 100)
+      len(taxis[total_under_five & uses_credit])
+      / len(taxis[total_under_five]) * 100)
 
 print("Fraction of payments over $50 use a credit card (percent):",
-      len(taxis[total_over_fifty & uses_credit]) / len(taxis[total_over_fifty]) * 100)
+      len(taxis[total_over_fifty & uses_credit])
+      / len(taxis[total_over_fifty]) * 100)
 
 print("The mean fare per minute driven:",
       (taxis['fare_amount'] / (taxis['trip_time_in_secs'] / 60)).mean())
@@ -65,8 +75,10 @@ print("The mean fare per minute driven:",
 print("The median of the taxi's fare per mile driven:",
       (taxis['fare_amount'] / (taxis['trip_distance'])).median())
 
-print("The 95 percentile of the taxi's average driving speed in miles per hour:",
-      (taxis['trip_distance'] / (taxis['trip_time_in_secs'] / 3600)).quantile(0.95))
+print("The 95 percentile of the taxi's average driving speed"
+      "in miles per hour:",
+      (taxis['trip_distance'] / (taxis['trip_time_in_secs'] / 3600)
+       ).quantile(0.95))
 
 
 def distance_on_unit_sphere(lat1, lon1, lat2, lon2):
@@ -135,7 +147,8 @@ def haversine(lat1, lon1, lat2, lon2):
 
     dlon = lon2 - lon1
     dlat = lat2 - lat1
-    a = (math.sin(dlat / 2)) ** 2 + math.cos(lat1) * math.cos(lat2) * (math.sin(dlon / 2)) ** 2
+    a = (math.sin(dlat / 2)) ** 2 + math.cos(lat1) * math.cos(lat2) \
+                                    * (math.sin(dlon / 2)) ** 2
     return 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
 
@@ -147,9 +160,31 @@ def haversine_kilometers(lat1, lon1, lat2, lon2):
     return haversine(lat1, lon1, lat2, lon2) * 6373
 
 
-print("The average ratio of the distance between the pickup and dropoff divided by the distance driven:")
+def dist_by_miles(x):
+    hm = haversine_miles(x['pickup_latitude'], x['pickup_longitude'],
+                         x['dropoff_latitude'], x['dropoff_longitude'])
+    if hm > 0 and x['trip_distance'] > 0:
+        return x['trip_distance'] / hm
+    else:
+        return numpy.nan
 
-print("The average tip for rides from JFK:")
+
+print("The average ratio of the distance between the pickup and dropoff "
+      "divided by the distance driven:",
+      taxis.apply(lambda x: dist_by_miles(x), axis=1, reduce=True).mean())
+
+pkup_lat_in_jfk_max = taxis['pickup_latitude'] < 40.649256
+pkup_lat_in_jfk_min = taxis['pickup_latitude'] > 40.639955
+pkup_lon_in_jfk_min = taxis['pickup_longitude'] > -73.793245
+pkup_lon_in_jfk_max = taxis['pickup_longitude'] < -73.774793
+tipped = taxis['tip_amount'] > 0
+print("The average tip for rides from JFK:",
+      taxis[pkup_lat_in_jfk_max & pkup_lat_in_jfk_min & pkup_lon_in_jfk_max &
+            pkup_lon_in_jfk_min]['tip_amount'].mean())
+
+print("The average tip when tipped for rides from JFK:",
+      taxis[pkup_lat_in_jfk_max & pkup_lat_in_jfk_min & pkup_lon_in_jfk_max &
+            pkup_lon_in_jfk_min & tipped]['tip_amount'].mean())
 
 print("The median March revenue of a taxi driver:",
       taxis.groupby('hack_license')['total_amount'].sum().median())
