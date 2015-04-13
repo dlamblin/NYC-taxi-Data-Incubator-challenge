@@ -192,5 +192,5 @@ print("The average ratio of the distance between the pickup and dropoff "
           ['pickup_latitude', 'pickup_longitude',
            'dropoff_latitude', 'dropoff_longitude',
            'trip_distance']
-      ].apply(lambda x: dist_by_miles(x), axis=1, reduce=True).mean())
+      ].apply(dist_by_miles, axis=1, reduce=True).mean())
 
