@@ -56,7 +56,8 @@ meaning I've put off learning Python. I have tried it (and Ruby), but it hasn't 
 So for this challenge I thought Python might just be perfect (though R and/or Matlab/Octave could have done nicely).
 To that end I looked at Python 3 vs 2.7 and saw that 3.4 brought in a standard statistics library, so no need to figure
 out how to install numpy (probably best saved for further exploration). PyCharm CE was downloaded and I put together
-what you see in this repository. I fully caveat this by saying it's likely not properly pythonic in style.
+what you see in this repository. It turns out Pycharm has an action on unkown imports to try and install them, so that
+makes using numpy or pandas pretty easy. I fully caveat this by saying it's likely not properly pythonic in style.
 
 There was a single-script text field for each submission with a 10k character limit. That influenced my choice of not
 building a Java project with multiple classes and interfaces etc to answer this challenge.
